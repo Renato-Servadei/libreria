@@ -3,6 +3,8 @@ from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 
 from .models.ModeloLibro import ModeloLibro
+from .models.ModeloUsuario import ModeloUsuario
+from .models.entities.Usuario import Usuario
 
 
 
@@ -20,7 +22,9 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['usuario'] == 'Tito Puente' and request.form['password'] == '111111':
+        usuario = Usuario(None, request.form['usuario'], request.form['password'], None)
+        usuario_logeado = ModeloUsuario.login(db, usuario)
+        if usuario_logeado != None:
             return redirect(url_for('index'))
         else:
             return render_template('auth/login.html')
