@@ -4,7 +4,10 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-
+    MYSQL_HOST='localhost'
+    MYSQL_USER='rober'
+    MYSQL_PASSWORD=''
+    MYSQL_DB='kokoro'
 
 config = {
     'development': DevelopmentConfig,
