@@ -10,14 +10,14 @@
     <table>
         {% for l in data.libros %}
         <tr>
-            <td>{{ l[0]}}</td>
-            <td>{{ l[1]}}</td>
-            <td>{{ l[2]}}</td>
-            <td>{{ l[3]}}</td>
-            <td>{{ l[4]}}</td>
-            <td>{{ l[5]}}</td>
+            <td>{{ l.isbn }}</td>
+            <td>{{ l.titulo }}</td>
+            <td>{{ l.anioedicion }}</td>
+            <td>{{ l.autor.apellidos }}</td>
+            <td>{{ l.autor.apellidos }}</td>
+            <td>{{ l.precio }}</td>
         </tr>
         {% endfor %}
-    </table> 
+    </table>  
 </body>
 </html>
