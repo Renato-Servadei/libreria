@@ -1,5 +1,5 @@
 class Config:
-    pass
+    SECRET_KEY = 'mGAu6CAG9RTDd2np*'
 
 
 class DevelopmentConfig(Config):
