@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 from .models.ModeloLibro import ModeloLibro
 from .models.ModeloUsuario import ModeloUsuario
@@ -24,7 +24,22 @@ def load_user(id):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    if current_user.is_authenticated:
+            if current_user.tipousuario.id == 1:
+                libros_vendidos = []
+                data = {
+                    'titulo' : 'Libros Vendidos',
+                    'libros_vendidos' : libros_vendidos
+                }
+            else: 
+                compras = []
+                data = {
+                    'titulo' : 'Mis compras',
+                    'compras' : compras
+                }
+            return render_template('index.html', data=data)
+    else:
+        redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -61,8 +76,7 @@ def listar_libros():
         }
         return render_template('listado_libros.html', data=data)
     except Exception as ex:
-        print(ex)
-        return "problema"
+        return render_template('errores/error.html', mensaje=format(ex))
 
 
 def pagina_no_encontrada(error):
