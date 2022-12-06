@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user
@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_user, logout_user
 from .models.ModeloLibro import ModeloLibro
 from .models.ModeloUsuario import ModeloUsuario
 from .models.entities.Usuario import Usuario
+from .consts import *
 
 
 app = Flask(__name__)
@@ -33,8 +34,10 @@ def login():
         usuario_logeado = ModeloUsuario.login(db, usuario)
         if usuario_logeado != None:
             login_user(usuario_logeado)
+            flash(BIENVENIDA, 'success')
             return redirect(url_for('index'))
         else:
+            flash(LOGIN_INCORRECTO, 'warning')
             return render_template('auth/login.html')
     else:
         return render_template('auth/login.html')
@@ -43,6 +46,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash(LOGOUT_EXITOSO, 'success')
     return redirect(url_for('login'))
 
 
