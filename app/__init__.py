@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user, login_required
 
 from .models.ModeloLibro import ModeloLibro
 from .models.ModeloUsuario import ModeloUsuario
@@ -22,6 +22,7 @@ def load_user(id):
 
 
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -51,6 +52,7 @@ def logout():
 
 
 @app.route('/libros')
+@login_required
 def listar_libros():
     try:
         libros = ModeloLibro.listar_libros(db)
@@ -66,9 +68,12 @@ def listar_libros():
 def pagina_no_encontrada(error):
     return render_template('errores/404.html'), 404
 
+def pagina_no_autorizada(error):
+    return redirect(url_for('login'))
 
 def inicializar_app(config):
     app.config.from_object(config)
     csrf.init_app(app)
     app.register_error_handler(404, pagina_no_encontrada)
+    app.register_error_handler(401, pagina_no_autorizada)
     return app
