@@ -10,18 +10,8 @@
         });
     });
     
-    const confirmarComprar = () => {
-
-        Swal.fire({
-            title: 'Confirma la compra del libro seleccionado',
-            inputAttributes: {
-                autocapitalize: 'off'
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Comprar',
-            showLoaderOnConfirm: true,
-            preConfirm: async () => {
-                return await fetch(`${window.origin}/comprarLibro`, {
+    const confirmarComprar = async () => {
+        await fetch('http://127.0.0.1:5000/comprarLibro', {
             method: 'POST',
             mode: 'same-origin',
             credentials : 'same-origin',
@@ -34,19 +24,13 @@
             })
         }).then(response => {
             if(!response.ok) {
-                notificacionSwal('Error', response.statusText, 'error', 'Cerrar');
+                console.error('Error');
             }
             return response.json();
         }).then(data => {
-            notificacionSwal('Exito!', 'libro comprado', 'success', 'ok!');
+            console.log("libro comprado");
         }).catch(err => {
-            notificacionSwal('Error', error, 'error', 'Cerrar');
+            console.error(`Error: ${err}`);
     });
-            },
-            allowOutsideClick: () => false,
-            allowEscapeKey: () => false
-        });
-
-        
 };
 })();
