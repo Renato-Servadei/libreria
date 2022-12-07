@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect, flash, jso
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_mail import Mail
 
 from .models.ModeloCompra import ModeloCompra
 from .models.ModeloLibro import ModeloLibro
@@ -12,6 +13,7 @@ from .models.entities.Usuario import Usuario
 from .models.entities.Libro import Libro
 
 from .consts import *
+from .email import confirmacion_compra
 
 
 app = Flask(__name__)
@@ -19,6 +21,7 @@ app = Flask(__name__)
 csrf = CSRFProtect()
 db = MySQL(app)
 login_manager_app = LoginManager(app)
+mail = Mail()
 
 
 @login_manager_app.user_loader
@@ -97,11 +100,12 @@ def comprar_libro():
     print(data_request)
     data = {}
     try: 
-        libro = Libro(data_request['isbn'], None, None, None, None)
+        #libro = Libro(data_request['isbn'], None, None, None, None)
+        libro = ModeloLibro.leer_libro(db, data_request['isbn'])
         compra = Compra(None, libro, current_user)
         print(compra)
         data['exito'] = ModeloCompra.registrar_compra(db, compra)
-        print(data)
+        confirmacion_compra(mail, current_user, libro)
     except Exception as ex:
         data['mensaje'] = format(ex)
         data['exito']= False
@@ -118,6 +122,7 @@ def pagina_no_autorizada(error):
 def inicializar_app(config):
     app.config.from_object(config)
     csrf.init_app(app)
+    mail.init_app(app)
     app.register_error_handler(404, pagina_no_encontrada)
     app.register_error_handler(401, pagina_no_autorizada)
     return app

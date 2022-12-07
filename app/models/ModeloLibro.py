@@ -42,3 +42,17 @@ class ModeloLibro():
                 return libros
             except Exception as ex:
                     raise Exception(ex)
+
+    
+    @classmethod
+    def leer_libro(self, db, isbn):
+        try:
+            cursor = db.connection.cursor()
+            sql = """SELECT isbn, titulo, anioedicion, precio
+                    FROM libro WHERE isbn = '{0}'""".format(isbn)
+            cursor.execute(sql)
+            data = cursor.fetchone()
+            libro = Libro(data[0], data[1], None, data[2], data[3])
+            return libro
+        except Exception as ex:
+            raise Exception(ex)
