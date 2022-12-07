@@ -2,6 +2,10 @@
 
 {% block title %}Index{% endblock %}
 
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename="css/index.css")}} ">
+{% endblock  %}
+
 {% block container %}
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -32,7 +36,38 @@
     </div>
     {% if current_user.tipousuario.id == 1%}
     {% if data.libros_vendidos|length > 0 %}
-
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Libro</th>
+                        <th>Unidades Vendidas</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>            
+                <tbody>
+                    {% set contador = namespace(total = 0) %}
+                    {% for l in data.libros_vendidos %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td style="text-align: left; padding-left: 10%;">{{ l.titulo }} </td>
+                        <td>{{ l.unidades_vendidas }} </td>
+                        <td>{{ l.precio }} </td>
+                        <td>{{ l.precio * l.unidades_vendidas }} </td>
+                    </tr>
+                    {% set contador.total = contador.total + l.precio * l.unidades_vendidas %}
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4"></td>
+                        <td id="total">{{ contador.total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% else %}
     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <h3>A&uacute;n no existen libros vendidos</h2>
